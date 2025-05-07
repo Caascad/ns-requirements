@@ -1,0 +1,32 @@
+{{- range $key,  $ns := .Values.NamespaceList }}
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: {{ $.Values.OBBY_REG_NAME_CREDS }}-project-dev
+  namespace: {{ $ns }}
+spec:
+  interval: {{ $.Values.HelmRepoInterval | default "10ms" }}
+  provider: generic
+  secretRef:
+    name: {{ $.Values.OBBY_REG_NAME_CREDS }}-robot-dev-credentials
+  type: oci
+  url: oci://oci-registry.obs-corp-prd.cloudservicesfactory.com/dev/charts
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: {{ $.Values.OBBY_REG_NAME_CREDS }}-project-prd
+  namespace: {{ $ns }}
+spec:
+  interval: {{ $.Values.HelmRepoInterval | default "10m0s" }}
+  provider: generic
+  secretRef:
+    name: {{ $.Values.OBBY_REG_NAME_CREDS }}-robot-prd-credentials
+  type: oci
+  url: oci://oci-registry.obs-corp-prd.cloudservicesfactory.com/prd/charts
+{{ end }}
+
+
+
+
+   

@@ -1,0 +1,9 @@
+HelmRepoInterval: 10ms
+NamespaceList:
+  - obby-alloy-monitoring
+  - obby-loki
+  - obby-mimir
+  - obby-alloy-tenants-shared
+  - obby-grafana
+  - obby-grafana-operator
+  - obby-fluent

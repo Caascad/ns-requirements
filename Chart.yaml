@@ -1,0 +1,5 @@
+apiVersion: v2
+name: obby-requirements
+description: Observability helm chart to provision registry secret and helmrepository
+type: application
+version: 0.1.0
