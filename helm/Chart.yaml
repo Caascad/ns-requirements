@@ -3,3 +3,4 @@ name: obby-requirements
 description: Observability helm chart to provision registry secret and helmrepository
 type: application
 version: 0.1.0
+appVersion: 0.1.0
