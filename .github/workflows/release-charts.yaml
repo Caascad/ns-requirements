@@ -3,62 +3,34 @@ name: Release Charts
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
   release:
     runs-on: ubuntu-latest
     permissions:
-      contents: write 
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - name: Get tag version
-        id: get_version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/v}"
-
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.10.0
+          
       - name: Configure Git
         run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
-      - name: Install Helm
-        uses: azure/setup-helm@v3
-        with:
-          version: v3.10.0
-
-      - name: Create gh-pages branch if it doesn't exist
-        run: |
-          if ! git ls-remote --heads origin gh-pages; then
-            git checkout --orphan gh-pages
-            git rm -rf .
-            touch index.html
-            git add index.html
-            git commit -m "Initial gh-pages commit"
-            git push origin gh-pages
-            git checkout ${GITHUB_REF#refs/heads/}
-          fi
-
-      - name: Update chart version
-        run: |
-          if [ -f "helm/Chart.yaml" ]; then
-            # Mettre à jour la version du chart pour correspondre au tag
-            sed -i "s/^version:.*/version: $VERSION/" helm/Chart.yaml
-            git add helm/Chart.yaml
-            git commit -m "Update chart version to $VERSION" || echo "No changes to commit"
-          fi
-
       - name: Install chart-releaser
         uses: helm/chart-releaser-action@v1.7.0
         with:
-          charts_dir: helm
+          charts_dir: charts/
           packages_with_index: true
         env:
-            CR_TOKEN: "${{ secrets.CHART_RELEASER_TOKEN }}"
-            CR_PACKAGES_WITH_INDEX: true
-            CR_PACKAGE_PATH: "helm"
-  
-        
+          CR_TOKEN: "${{ secrets.CHART_RELEASER_TOKEN }}"
+          CR_PACKAGES_WITH_INDEX: true
